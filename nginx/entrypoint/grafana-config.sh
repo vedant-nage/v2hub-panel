@@ -2,6 +2,9 @@
 
 set -eu
 
+: "${GRAFANA_HOST:=grafana}"
+: "${GRAFANA_PORT:=3000}"
+
 mkdir -p /etc/nginx/snippets
 
 GRAFANA_CONFIG="/etc/nginx/snippets/grafana.conf"

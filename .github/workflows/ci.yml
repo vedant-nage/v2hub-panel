@@ -167,6 +167,8 @@ jobs:
           docker run --rm \
             --entrypoint /bin/sh \
             --env MONITORING_PROFILE=enabled \
+            --env GRAFANA_HOST=grafana \
+            --env GRAFANA_PORT=3000 \
             -v "$PWD/nginx/entrypoint/grafana-config.sh:/tmp/grafana-config.sh:ro" \
             nginx:1.25-alpine \
             -c 'mkdir -p /etc/nginx/snippets && cp /tmp/grafana-config.sh /tmp/test.sh && chmod +x /tmp/test.sh && /tmp/test.sh && grep -q "proxy_pass http://grafana:3000;" /etc/nginx/snippets/grafana.conf'
@@ -179,6 +181,15 @@ jobs:
             -v "$PWD/nginx/entrypoint/grafana-config.sh:/tmp/grafana-config.sh:ro" \
             nginx:1.25-alpine \
             -c 'mkdir -p /etc/nginx/snippets && cp /tmp/grafana-config.sh /tmp/test.sh && chmod +x /tmp/test.sh && /tmp/test.sh && grep -q "return 404;" /etc/nginx/snippets/grafana.conf'
+
+      - name: Validate Nginx routing - enabled without GRAFANA_HOST/PORT set
+        run: |
+          docker run --rm \
+            --entrypoint /bin/sh \
+            --env MONITORING_PROFILE=enabled \
+            -v "$PWD/nginx/entrypoint/grafana-config.sh:/tmp/grafana-config.sh:ro" \
+            nginx:1.25-alpine \
+            -c 'mkdir -p /etc/nginx/snippets && cp /tmp/grafana-config.sh /tmp/test.sh && chmod +x /tmp/test.sh && /tmp/test.sh && grep -q "proxy_pass http://grafana:3000;" /etc/nginx/snippets/grafana.conf'
 
   ci-success:
     name: CI success
